@@ -10,8 +10,8 @@ Source0:	http://www.opencsg.org/OpenCSG-%{version}.tar.gz
 URL:		http://www.opencsg.org/
 Patch0:		%{name}-build.patch
 BuildRequires:	dos2unix
-BuildRequires:	freeglut-devel
 BuildRequires:	glew-devel
+BuildRequires:	libstdc++-devel
 BuildRequires:	qt4-qmake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
