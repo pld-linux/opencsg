@@ -2,17 +2,18 @@ Summary:	Library for Constructive Solid Geometry using OpenGL
 Name:		opencsg
 Version:	1.4.0
 Release:	1
-Group:		Libraries
 # license.txt contains a linking exception for CGAL
-License:	GPLv2 with exceptions
-URL:		http://www.opencsg.org/
+License:	GPL v2 with exceptions
+Group:		Libraries
 Source0:	http://www.opencsg.org/OpenCSG-%{version}.tar.gz
 # Source0-md5:	e7fe5fa2bfa1b466f470699da41eb0a2
+URL:		http://www.opencsg.org/
 Patch0:		%{name}-build.patch
 BuildRequires:	dos2unix
 BuildRequires:	freeglut-devel
 BuildRequires:	glew-devel
-BuildRequires:	qt-devel
+BuildRequires:	qt4-qmake
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 OpenCSG is a library that does image-based CSG rendering using OpenGL.
@@ -36,7 +37,7 @@ SCS algorithm, both of them in several variants.
 %package devel
 Summary:	OpenCSG development files
 Group:		Development/Libraries
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Development files for OpenCSG.
@@ -48,42 +49,39 @@ Development files for OpenCSG.
 rm src/Makefile RenderTexture/Makefile Makefile example/Makefile
 dos2unix license.txt
 # New FSF Address
-for FILE in src/*.h src/*.cpp include/opencsg.h
-do
-  sed -i s/"59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"/"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"/ $FILE
+for FILE in src/*.h src/*.cpp include/opencsg.h; do
+	sed -i s/"59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"/"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"/ $FILE
 done
 
-# Use Fedora's glew
-rm -rf glew/
+# no bundled glew
+rm -rf glew
 
 %build
 qmake-qt4
 %{__make}
 
+rm lib/libopencsg.so.1.4
+chmod g-w lib/*
+
 %install
 rm -rf $RPM_BUILD_ROOT
-# No make install
-chmod g-w lib/*
-install -d $RPM_BUILD_ROOT/%{_libdir}
-install -d $RPM_BUILD_ROOT/%{_includedir}
-cp -pP lib/* $RPM_BUILD_ROOT/%{_libdir}/
-cp -p include/opencsg.h $RPM_BUILD_ROOT/%{_includedir}/
+install -d $RPM_BUILD_ROOT{%{_libdir},%{_includedir}}
+cp -pP lib/* $RPM_BUILD_ROOT%{_libdir}
+cp -p include/opencsg.h $RPM_BUILD_ROOT%{_includedir}
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
 %doc changelog.txt doc license.txt
-%attr(755,root,root) %{_libdir}/libopencsg.so.*.*
+%attr(755,root,root) %{_libdir}/libopencsg.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libopencsg.so.1
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/*
+%{_includedir}/opencsg.h
 %attr(755,root,root) %{_libdir}/libopencsg.so
-
-%changelog
-
-%clean
-rm -rf $RPM_BUILD_ROOT
