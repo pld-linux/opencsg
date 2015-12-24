@@ -1,7 +1,7 @@
 Summary:	Library for Constructive Solid Geometry using OpenGL
 Name:		opencsg
 Version:	1.4.0
-Release:	2
+Release:	3
 # license.txt contains a linking exception for CGAL
 License:	GPL v2 with exceptions
 Group:		Libraries
