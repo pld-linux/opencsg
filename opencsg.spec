@@ -44,7 +44,7 @@ Development files for OpenCSG.
 
 %prep
 %setup -q -n OpenCSG-%{version}
-%patch0 -p1
+%patch -P0 -p1
 
 rm src/Makefile RenderTexture/Makefile Makefile example/Makefile
 dos2unix license.txt
